@@ -1,1 +1,1 @@
-# AssistantGenDescriptionHotel
+# GenDescriptionHotel
