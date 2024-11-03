@@ -5,37 +5,54 @@
 }
 
 .main {
-    width: 80vw;
-    height: 90vh;
+    width: 100vw;
+    height: 100vh;
     margin-top: 0px;
-}
-
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0;
-    padding: 0;
-    height: 100vh; /* Высота на весь экран */
-    background: url('../images/back.png') no-repeat center center fixed; 
+    background: url('../images/back1.png') no-repeat center center fixed; 
     background-size: cover; /* Изображение фона будет покрывать весь экран */
     color: #333;
 }
 
+body {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    height: 100vh; /* Высота на весь экран */
+}
+
+.body_welcome {
+    display: flex;
+    flex-direction: column;
+}
+
+.header_welcome {
+    padding-bottom: 70vh;
+    background-image: url("../images/gallery-02arden.jpg");
+    background-attachment: fixed;
+    background-size: cover;
+    -moz-background-size: cover;
+    -webkit-background-size: cover;
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-color: rgba(48, 46, 45, 0.5);
+    background-blend-mode: multiply;
+}
+
 .container {
+    display: block;
+    margin: auto;
+    margin-top: 1rem; /* Добавляет отступ сверху */
     width: 90%; /* Ширина контейнера 90% от ширины экрана */
     max-width: 600px; /* Максимальная ширина остаётся 600px */
     padding: 2rem; /* Паддинг в rem для адаптивности */
     border-radius: 10px;
     background-color: rgba(255, 255, 255, 0.9);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    margin: auto; /* Центрируем контейнер */
 }
 
 h1 {
     font-size: 2rem; /* Заголовок с адаптивным размером */
     text-align: center;
-    color: #6588eb;
     margin: 10px 0;
 }
 
@@ -86,6 +103,152 @@ button:hover {
     display: none;
     word-wrap: break-word; /* Перенос слов */
     max-width: 100%; /* Максимальная ширина 100% */
+}
+
+.main-title {
+    color: aliceblue;
+    font-weight: 800;
+    font-size: 50px;
+    padding-top: 35vh;
+}
+
+.intro-text {
+    display: flex;
+    margin: auto;   
+    color: aliceblue;
+    font-weight: 600;
+    width: 40vw;
+    margin-top: 30px;   
+    font-size: 26px;
+}
+
+.wrapper-header {
+    text-align: left; /* Центрирует содержимое внутри контейнера */
+}
+
+.white-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #ffffff;
+    color: #333;
+    border: 2px solid #333;
+    border-radius: 5px;
+    border: none;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s;
+    margin-top: 0; /* Убирает отступы сверху */
+    margin-left: 30vw;
+    margin-top: 10px;
+}
+
+.white-button::after {
+    content: " →"; /* Текст, который будет отображаться после кнопки */
+    color: #333; /* Цвет текста */
+    font-weight: normal; /* Можно изменить стиль текста */
+    transition: color 0.3s;
+}
+
+.white-button:hover {
+    background-color: #333;
+    color: #ffffff;
+}
+
+.white-button:hover::after {
+    color: #ffffff; /* Меняет цвет текста после кнопки при наведении */
+}
+
+.white-back {
+    color: aliceblue;
+    margin: auto;
+}
+
+.main-content {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+.section-about, .section-examples, .section-links {
+    margin-bottom: 2rem;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.section-text, .example-list {
+    text-align: center;
+}
+
+.footer-text {
+    text-align: center;
+    padding: 1rem 0;
+    background-color: #333;
+    color: #fff;
+}
+
+.wrapper-content {
+    text-align: center;
+}
+
+.section-text {
+    width: 800px;
+    font-size: 20px;
+    margin: auto;
+}
+
+.section-example-model {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.example-card {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center; /* Центровка текста по горизонтали */
+}
+
+.hotel-description,
+.hotel-welcome {
+    margin-top: 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    text-align: justify; /* Выравнивание текста по ширине */
+    color: #444;
+}
+
+.hotel-welcome {
+    text-align: center;
+}
+
+.hotel-address,
+.hotel-price,
+.hotel-category {
+    font-size: 1rem;
+    color: #555;
+    text-align: center; /* Центровка текста по горизонтали */
+}
+
+ul.hotel-services,
+ul.hotel-features {
+    list-style-type: none; /* Убирает маркеры */
+    padding: 0; /* Убирает отступы */
+    margin: 0; /* Убирает внешние отступы */
+}   
+
+.hotel-description {
+    width: 500px;
 }
 
 @media(max-width: 992px){
