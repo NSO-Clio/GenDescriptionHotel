@@ -1,0 +1,104 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.main {
+    width: 80vw;
+    height: 90vh;
+    margin-top: 0px;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    height: 100vh; /* Высота на весь экран */
+    background: url('../images/back.png') no-repeat center center fixed; 
+    background-size: cover; /* Изображение фона будет покрывать весь экран */
+    color: #333;
+}
+
+.container {
+    width: 90%; /* Ширина контейнера 90% от ширины экрана */
+    max-width: 600px; /* Максимальная ширина остаётся 600px */
+    padding: 2rem; /* Паддинг в rem для адаптивности */
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    margin: auto; /* Центрируем контейнер */
+}
+
+h1 {
+    font-size: 2rem; /* Заголовок с адаптивным размером */
+    text-align: center;
+    color: #6588eb;
+    margin: 10px 0;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+input[type="text"], input[type="number"], select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
+    border-color: #6588eb;
+    box-shadow: 0 0 5px rgba(101, 136, 235, 0.5);
+    outline: none; /* Убираем стандартный outline */
+}
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #cde766;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+button:hover {
+    background-color: #4CAF50;
+}
+.result {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: rgba(224, 247, 250, 0.9);
+    border-radius: 5px;
+    display: none;
+    word-wrap: break-word; /* Перенос слов */
+    max-width: 100%; /* Максимальная ширина 100% */
+}
+
+@media(max-width: 992px){
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        width: 98%;
+        margin-top: 80px;
+        border-radius: 10px;
+        background-color: rgb(225, 234, 248);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        margin: auto; /* Центрируем контейнер */
+    }
+}

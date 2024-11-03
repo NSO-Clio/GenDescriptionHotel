@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генерация описания отеля</title>
+    <link rel="stylesheet" href="../static/style/styles.css">
+</head>
+<body>
+    <section class="main">
+        <div class="container">
+            <h1>Генерация описания отеля</h1>
+            <form id="hotelForm" onsubmit="return generateDescription();">
+                <div class="form-group">
+                    <label for="hotelName">Название отеля:</label>
+                    <input type="text" id="hotelName" name="hotelName" required>
+                </div>
+                <div class="form-group">
+                    <label for="hotelAddress">Адрес отеля: (город)</label>
+                    <input type="text" id="hotelAddress" name="hotelAddress" required>
+                </div>
+                <div class="form-group">
+                    <label for="pricePerNight">Средняя стоимость номера за сутки (₽):</label>
+                    <input type="number" id="pricePerNight" name="pricePerNight" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Целевая категория:</label>
+                    <select id="category" name="category" required>
+                        <option value="" disabled selected>Выберите категорию</option>
+                        <option value="Туристы">Туристы</option>
+                        <option value="Семейный">Семейный</option>
+                        <option value="Бизнес">Бизнес</option>
+                        <option value="Молодежный">Молодежный</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="services">Описание услуг:</label>
+                    <textarea id="services" name="services" placeholder="Например, бесплатный Wi-Fi, бассейн, фитнес-зал, ресторан и т.д." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="features">Особенности отеля:</label>
+                    <textarea id="features" name="features" placeholder="Например, в центре города, рядом с парком, уникальный дизайн и т.д." required></textarea>
+                </div>
+                <button type="submit">Сгенерировать описание</button>
+            </form>
+            
+            <div class="result" id="result" style="display: none;">
+                <h3>Описание отеля:</h3>
+                <p id="description"></p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function generateDescription() {
+            const hotelName = document.getElementById('hotelName').value;
+            const pricePerNight = document.getElementById('pricePerNight').value;
+            const category = document.getElementById('category').value;
+            const services = document.getElementById('services').value;
+            const features = document.getElementById('features').value;
+
+            // Проверка на заполнение всех полей
+            if (!hotelName || !pricePerNight || !category || !services || !features) {
+                alert('Пожалуйста, заполните все обязательные поля.');
+                return false; // Не отправлять форму
+            }
+
+            const data = {
+                hotelName: hotelName, 
+                pricePerNight: pricePerNight,
+                category: category,
+                services: services, 
+                features: features,
+            };
+
+            document.getElementById('result').style.display = 'none'; // Скрыть результат перед отправкой
+
+            function send_data(data) {
+                fetch('/get_data', {
+                    method: 'POST', 
+                    headers: {
+                        'Content-Type': 'application/json' // Указываем, что отправляем JSON
+                    },
+                    body: JSON.stringify(data) // Преобразуем объект в строку JSON
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Сеть ответила с ошибкой');
+                    }
+                    return response.json(); // Преобразуем ответ в JSON
+                })
+                .then(data => {
+                    console.log('Данные отправлены!', data);
+                    const description = `
+                        Добро пожаловать в отель "${hotelName}", идеальное место для ${category.toLowerCase()}.
+                        Ночь здесь обойдется в среднем в ${pricePerNight} ₽. ${services ? "Отель предлагает такие услуги, как " + services + ". " : ""}
+                        Особенности отеля: ${features || "премиальное расположение и первоклассный комфорт"}.
+                    `;
+                    document.getElementById('description').innerText = description;
+                    document.getElementById('result').style.display = 'block'; // Отобразить результат
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error); // Обработка ошибок
+                    alert('Произошла ошибка при отправке данных. Пожалуйста, попробуйте еще раз.');
+                });
+            }
+            
+            send_data(data);
+            return false; // Не отправлять форму
+        }
+    </script>
+</body>
+</html>
