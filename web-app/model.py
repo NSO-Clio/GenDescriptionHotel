@@ -1,18 +1,51 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer
+import torch
 
 
 class DescriptionGener:
     def __init__(self) -> None:
-        self.model_name = "Qwen/Qwen2.5-1.5B-Instruct"
-        self.model = AutoModelForCausalLM.from_pretrained(
-            self.model_name,
-            torch_dtype="auto",
-            device_map="auto"
-        )
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+        """Инициализация модели и токенизатора."""
+        # Название используемой модели
+        self.model_name: str = "Qwen/Qwen2.5-1.5B-Instruct"
 
-    def genDescription(self, hotel_name: str, hotel_address: str, average_price: str, target_category: str, services_description: str, hotel_features: str, max_new_tokens: int = 512) -> str:
-        prompt = (
+        # Загрузка модели для генерации текста
+        self.model: AutoModelForCausalLM = AutoModelForCausalLM.from_pretrained(
+            self.model_name,
+            torch_dtype="auto",  # Автоматический выбор типа данных для использования
+            device_map="auto"  # Автоматический выбор устройства (CPU или GPU)
+        )
+
+        # Загрузка токенизатора для преобразования текста в токены
+        self.tokenizer: AutoTokenizer = AutoTokenizer.from_pretrained(self.model_name)
+
+    def genDescription(
+            self,
+            hotel_name: str,
+            hotel_address: str,
+            average_price: str,
+            target_category: str,
+            services_description: str,
+            hotel_features: str,
+            max_new_tokens: int = 512
+    ) -> str:
+        """
+        Генерация описания отеля на основе заданных параметров.
+
+        Параметры:
+            hotel_name (str): Название отеля.
+            hotel_address (str): Адрес отеля.
+            average_price (str): Средняя стоимость номера за сутки в рублях.
+            target_category (str): Целевая категория гостей.
+            services_description (str): Описание предоставляемых услуг.
+            hotel_features (str): Уникальные особенности отеля.
+            max_new_tokens (int): Максимальное количество генерируемых токенов (по умолчанию 512).
+
+        Возвращает:
+            str: Сгенерированное описание отеля.
+        """
+
+        # Создание подсказки (prompt) для модели
+        prompt: str = (
             "Вам предстоит создать описание для отеля на основе следующих данных, чтобы привлечь внимание "
             "потенциальных гостей и представить уникальные особенности отеля. Пожалуйста, сформулируйте текст ясно, "
             "деловым тоном и избегайте домыслов.\n\n"
@@ -31,21 +64,36 @@ class DescriptionGener:
             "На основе этих данных сформулируйте привлекательное описание отеля, подходящее для его целевой категории гостей. "
             "Учитывайте, что описание должно быть информативным и привлекать внимание к преимуществам отеля, так же описание должно быть на русском языке"
         )
-        messages = [
+
+        # Подготовка сообщений для модели
+        messages: list[dict[str, str]] = [
             {"role": "user", "content": prompt}
         ]
-        text = self.tokenizer.apply_chat_template(
+
+        # Преобразование подсказки в текст с использованием шаблона
+        text: str = self.tokenizer.apply_chat_template(
             messages,
             tokenize=False,
             add_generation_prompt=True
         )
-        model_inputs = self.tokenizer([text], return_tensors="pt").to(self.model.device)
-        generated_ids = self.model.generate(
+
+        # Преобразование текста в тензоры для подачи на вход модели
+        model_inputs: dict[str, torch.Tensor] = self.tokenizer(
+            [text], return_tensors="pt"
+        ).to(self.model.device)
+
+        # Генерация текста с указанным ограничением по количеству токенов
+        generated_ids: torch.Tensor = self.model.generate(
             **model_inputs,
-            max_new_tokens=512
+            max_new_tokens=max_new_tokens
         )
+
+        # Удаление начальных токенов, чтобы оставить только сгенерированную часть
         generated_ids = [
             output_ids[len(input_ids):] for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)
         ]
-        response = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
-        return response
+
+        # Декодирование сгенерированных токенов в текст
+        response: str = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
+
+        return response  # Возвращаем результат
