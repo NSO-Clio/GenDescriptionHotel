@@ -11,6 +11,7 @@
         <div class="container">
             <h1>Генерация описания отеля</h1>
             <form id="hotelForm" onsubmit="return generateDescription();">
+                <!-- Поля формы -->
                 <div class="form-group">
                     <label for="hotelName">Название отеля:</label>
                     <input type="text" id="hotelName" name="hotelName" required>
@@ -48,6 +49,9 @@
                 <h3>Описание отеля:</h3>
                 <p id="description"></p>
             </div>
+
+            <!-- Блок для отображения анимации -->
+            <p id="loading" style="display: none; font-weight: bold;">Идет генерация<span id="dots"></span></p>
         </div>
 
         <footer>
@@ -58,6 +62,8 @@
     </section>
 
     <script>
+        let loadingInterval; // Переменная для хранения идентификатора setInterval
+
         function generateDescription() {
             const hotelName = document.getElementById('hotelName').value;
             const hotelAddress = document.getElementById('hotelAddress').value;
@@ -65,13 +71,13 @@
             const category = document.getElementById('category').value;
             const services = document.getElementById('services').value;
             const features = document.getElementById('features').value;
-        
+
             // Проверка на заполнение всех полей
             if (!hotelName || !pricePerNight || !category || !services || !features) {
                 alert('Пожалуйста, заполните все обязательные поля.');
                 return false;
             }
-        
+
             const data = {
                 hotelName: hotelName,
                 hotelAddress: hotelAddress,
@@ -80,9 +86,21 @@
                 services: services,
                 features: features,
             };
-        
+
             document.getElementById('result').style.display = 'none'; // Скрыть результат перед отправкой
-        
+            document.getElementById('description').innerText = ''; // Очистить прошлое описание
+
+            // Показать анимацию "Идет генерация..."
+            const loadingText = document.getElementById('loading');
+            const dots = document.getElementById('dots');
+            loadingText.style.display = 'block';
+            let dotCount = 0;
+
+            loadingInterval = setInterval(() => {
+                dots.innerText = '.'.repeat(dotCount);
+                dotCount = (dotCount + 1) % 4;
+            }, 500); // Интервал для обновления точек
+
             fetch('/get_data', {
                 method: 'POST',
                 headers: {
@@ -94,22 +112,24 @@
                 if (!response.ok) {
                     throw new Error('Сеть ответила с ошибкой');
                 }
-                return response.json(); // Преобразуем ответ в JSON
+                return response.json();
             })
             .then(data => {
-                console.log('Данные получены:', data);
+                clearInterval(loadingInterval); // Остановить анимацию
+                loadingText.style.display = 'none'; // Скрыть анимацию
 
-                document.getElementById('description').innerText = '';
-                document.getElementById('description').innerText = data.description; // Запись описания
-                document.getElementById('result').style.display = 'block'; // Показать результат
+                document.getElementById('description').innerText = data.description;
+                document.getElementById('result').style.display = 'block';
             })
             .catch(error => {
-                console.error('Ошибка:', error); // Обработка ошибок
+                clearInterval(loadingInterval); // Остановить анимацию
+                loadingText.style.display = 'none'; // Скрыть анимацию
                 alert('Произошла ошибка при получении данных. Пожалуйста, попробуйте еще раз.');
+                console.error('Ошибка:', error);
             });
-        
+
             return false; // Не отправлять форму
-        }        
+        }
     </script>
 </body>
 </html>
