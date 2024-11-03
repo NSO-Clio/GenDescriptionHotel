@@ -60,60 +60,56 @@
     <script>
         function generateDescription() {
             const hotelName = document.getElementById('hotelName').value;
+            const hotelAddress = document.getElementById('hotelAddress').value;
             const pricePerNight = document.getElementById('pricePerNight').value;
             const category = document.getElementById('category').value;
             const services = document.getElementById('services').value;
             const features = document.getElementById('features').value;
-
+        
             // Проверка на заполнение всех полей
             if (!hotelName || !pricePerNight || !category || !services || !features) {
                 alert('Пожалуйста, заполните все обязательные поля.');
-                return false; // Не отправлять форму
+                return false;
             }
-
+        
             const data = {
-                hotelName: hotelName, 
+                hotelName: hotelName,
+                hotelAddress: hotelAddress,
                 pricePerNight: pricePerNight,
                 category: category,
-                services: services, 
+                services: services,
                 features: features,
             };
-
+        
             document.getElementById('result').style.display = 'none'; // Скрыть результат перед отправкой
+        
+            fetch('/get_data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Сеть ответила с ошибкой');
+                }
+                return response.json(); // Преобразуем ответ в JSON
+            })
+            .then(data => {
+                console.log('Данные получены:', data);
 
-            function send_data(data) {
-                fetch('/get_data', {
-                    method: 'POST', 
-                    headers: {
-                        'Content-Type': 'application/json' // Указываем, что отправляем JSON
-                    },
-                    body: JSON.stringify(data) // Преобразуем объект в строку JSON
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Сеть ответила с ошибкой');
-                    }
-                    return response.json(); // Преобразуем ответ в JSON
-                })
-                .then(data => {
-                    console.log('Данные отправлены!', data);
-                    const description = `
-                        Добро пожаловать в отель "${hotelName}", идеальное место для ${category.toLowerCase()}.
-                        Ночь здесь обойдется в среднем в ${pricePerNight} ₽. ${services ? "Отель предлагает такие услуги, как " + services + ". " : ""}
-                        Особенности отеля: ${features || "премиальное расположение и первоклассный комфорт"}.
-                    `;
-                    document.getElementById('description').innerText = description;
-                    document.getElementById('result').style.display = 'block'; // Отобразить результат
-                })
-                .catch(error => {
-                    console.error('Ошибка:', error); // Обработка ошибок
-                    alert('Произошла ошибка при отправке данных. Пожалуйста, попробуйте еще раз.');
-                });
-            }
-            
-            send_data(data);
+                document.getElementById('description').innerText = '';
+                document.getElementById('description').innerText = data.description; // Запись описания
+                document.getElementById('result').style.display = 'block'; // Показать результат
+            })
+            .catch(error => {
+                console.error('Ошибка:', error); // Обработка ошибок
+                alert('Произошла ошибка при получении данных. Пожалуйста, попробуйте еще раз.');
+            });
+        
             return false; // Не отправлять форму
-        }
+        }        
     </script>
 </body>
 </html>
