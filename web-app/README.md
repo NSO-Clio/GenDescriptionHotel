@@ -8,6 +8,9 @@
 
 ```
 git clone https://github.com/NSO-Clio/GenDescriptionHotel.git
+
+cd GenDescriptionHotel
+
 cd web-app
 ```
 
