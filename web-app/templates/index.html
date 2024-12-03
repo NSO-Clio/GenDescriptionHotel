@@ -5,63 +5,134 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Генерация описания отеля</title>
     <link rel="stylesheet" href="../static/style/styles.css">
+    <style>
+        .hidden { display: none; }  
+        .form-step { margin-bottom: 20px; }
+        .btn { padding: 10px 20px; cursor: pointer; margin: 8px;}
+        .btn-primary { background-color: #442502; color: #fff; border: none; }
+        .btn-secondary { background-color: #483a28; color: #fff; border: none; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .description-block { margin-top: 20px; padding: 15px; background: #f9f9f9; border: 1px solid #ddd; }
+        .choice-description { background-color: #442502; color: #fff; border: none;}
+        .chooseDescription {background-color: #442502; color: #fff; border: none;}
+        .submitFeedback2 {background-color: #442502; color: #fff; border: none;}
+    </style>
 </head>
 <body>
-    <section class="main">
-        <div class="container">
-            <h1>Генерация описания отеля</h1>
-            <form id="hotelForm" onsubmit="return generateDescription();">
-                <!-- Поля формы -->
-                <div class="form-group">
-                    <label for="hotelName">Название отеля:</label>
-                    <input type="text" id="hotelName" name="hotelName" required>
-                </div>
-                <div class="form-group">
-                    <label for="hotelAddress">Адрес отеля: (город)</label>
-                    <input type="text" id="hotelAddress" name="hotelAddress" required>
-                </div>
-                <div class="form-group">
-                    <label for="pricePerNight">Средняя стоимость номера за сутки (₽):</label>
-                    <input type="number" id="pricePerNight" name="pricePerNight" min="0" required>
-                </div>
-                <div class="form-group">
-                    <label for="category">Целевая категория:</label>
-                    <select id="category" name="category" required>
-                        <option value="" disabled selected>Выберите категорию</option>
-                        <option value="Туристы">Туристы</option>
-                        <option value="Семейный">Семейный</option>
-                        <option value="Бизнес">Бизнес</option>
-                        <option value="Молодежный">Молодежный</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="services">Описание услуг:</label>
-                    <textarea id="services" name="services" placeholder="Например, бесплатный Wi-Fi, бассейн, фитнес-зал, ресторан и т.д." required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="features">Особенности отеля:</label>
-                    <textarea id="features" name="features" placeholder="Например, в центре города, рядом с парком, уникальный дизайн и т.д." required></textarea>
-                </div>
-                <button type="submit">Сгенерировать описание</button>
-            </form>
-            
-            <div class="result" id="result" style="display: none;">
-                <h3>Описание отеля:</h3>
-                <p id="description"></p>
+    <main class="main_index">
+        <section class="main">
+            <div class="container">
+                <h1>Генерация описания отеля</h1>
+                <form id="hotelForm">
+                    <!-- Шаг 1: Выбор категории -->
+                    <div id="step1" class="form-step">
+                        <h2>Шаг 1: Выберите категорию отеля</h2>
+                        <select id="category" name="category" required>
+                            <option value="" disabled selected>Выберите категорию</option>
+                            <option value="Горнолыжный отель">Горнолыжный отель</option>
+                            <option value="Хостел">Хостел</option>
+                            <option value="Гостиница">Гостиница</option>
+                            <option value="Бизнес-отели">Бизнес-отели</option>
+                            <option value="Курортные отели">Курортные отели</option>
+                            <option value="Бутик-отели">Бутик-отели</option>
+                            <option value="Апартаменты и апарт-отели">Апартаменты и апарт-отели</option>
+                            <option value="Мини-гостиницы">Мини-гостиницы</option>
+                            <option value="Спа отель">Спа отель</option>
+                            <option value="Санаторий">Санаторий</option>
+                            <option value="Пансионат">Пансионат</option>
+                            <option value="Мотель">Мотель</option>
+                            <option value="Эко отели">Эко отели</option>
+                            <option value="Лоджи отель">Лоджи отель</option>
+                        </select>
+                        <div id="categoryDescription" class="form-group"></div>
+                        <button type="button" class="btn btn-primary" onclick="goToStep(2)">Далее</button>
+                    </div>
+    
+                    <!-- Шаг 2: Заполнение информации об отеле -->
+                    <div id="step2" class="form-step hidden">
+                        <h2>Шаг 2: Заполните информацию об отеле</h2>
+                        <div class="form-group">
+                            <label for="hotelName">Название отеля:</label>
+                            <input type="text" id="hotelName" name="hotelName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="hotelAddress">Адрес отеля: (город)</label>
+                            <input type="text" id="hotelAddress" name="hotelAddress" required>
+                        </div>
+                        <button type="button" class="btn btn-secondary" onclick="goToStep(1)">Назад</button>
+                        <button type="button" class="btn btn-primary" onclick="goToStep(3)">Далее</button>
+                    </div>
+    
+                    <!-- Шаг 3: Дополнительные сведения -->
+                    <div id="step3" class="form-step hidden">
+                        <h2>Шаг 3: Укажите дополнительные сведения</h2>
+
+                        <div class="form-group">
+                            <label for="services">Описание услуг:</label>
+                            <textarea id="services" name="services" placeholder="Например, бесплатный Wi-Fi, бассейн, фитнес-зал, ресторан и т.д." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="features">Особенности отеля:</label>
+                            <textarea id="features" name="features" placeholder="Например, в центре города, рядом с парком, уникальный дизайн, рядом с морем и тд." required></textarea>
+                        </div>
+                        <button type="button" class="btn btn-secondary" onclick="goToStep(2)">Назад</button>
+                        <button type="button" class="btn btn-primary" onclick="generateDescription()">Показать пример</button>
+                    </div>
+                </form>
             </div>
-
-            <!-- Блок для отображения анимации -->
-            <p id="loading" style="display: none; font-weight: bold;">Идет генерация<span id="dots"></span></p>
-        </div>
-
-        <footer>
-            <div class="wrapper-footer">
-                <a href="/" class="white-back">Главное меню</a>
+        </section>
+        <section class="answer">
+            <div id="example1" class="description-block hidden">
+                <h3>Пример описания отеля в1:</h3>
+                <p id="generatedDescription1"></p>
+                <!-- Кнопка "Выбрать описание" -->
+                <button id="chooseDescription1" class="chooseDescription">Выбрать описание</button>
+                <!-- Блок для оценки и комментария, изначально скрыт -->
+                <div id="feedback1" class="hidden">
+                    <h4>Оцените выбранное описание:</h4>
+                    <div id="ratingScale1">
+                        <label><input type="radio" name="rating1" value="1"> 1</label>
+                        <label><input type="radio" name="rating1" value="2"> 2</label>
+                        <label><input type="radio" name="rating1" value="3"> 3</label>
+                        <label><input type="radio" name="rating1" value="4"> 4</label>
+                        <label><input type="radio" name="rating1" value="5"> 5</label>
+                    </div>
+                    <textarea id="userComment1" placeholder="Что вам не понравилось?"></textarea>
+                    <button id="submitFeedback1"  class="chooseDescription">Отправить отзыв</button>
+                </div>
+                <!-- Кнопка для повторного генерации описания -->
+                <div id="generateAgain1" class="hidden">
+                    <button id="generateAgainBtn1">Сгенерировать заново</button>
+                </div>
             </div>
-        </footer>
-    </section>
+        
+            <div id="example2" class="description-block hidden">
+                <h3>Пример описания отеля в2:</h3>
+                <p id="generatedDescription2"></p>
+                <!-- Кнопка "Выбрать описание" -->
+                <button id="chooseDescription2" class="chooseDescription">Выбрать описание</button>
+                <!-- Блок для оценки и комментария, изначально скрыт -->
+                <div id="feedback2" class="hidden">
+                    <h4>Оцените выбранное описание:</h4>
+                    <div id="ratingScale2">
+                        <label><input type="radio" name="rating2" value="1"> 1</label>
+                        <label><input type="radio" name="rating2" value="2"> 2</label>
+                        <label><input type="radio" name="rating2" value="3"> 3</label>
+                        <label><input type="radio" name="rating2" value="4"> 4</label>
+                        <label><input type="radio" name="rating2" value="5"> 5</label>
+                    </div>
+                    <textarea id="userComment2" placeholder="Что вам не понравилось?"></textarea>
+                    <button id="submitFeedback2" class="chooseDescription">Отправить отзыв</button>
+                </div>
+                <!-- Кнопка для повторного генерации описания -->
+                <div id="generateAgain2" class="hidden">
+                    <button id="generateAgainBtn2">Сгенерировать заново</button>
+                </div>
+            </div>
+        </section>       
 
-    <!-- Подключение внешнего JS-файла -->
-    <script src="../static/scripts/generateDescription.js"></script>
+    </main>
+
+    <script src="../static/scripts/scripts.js"></script>
 </body>
 </html>

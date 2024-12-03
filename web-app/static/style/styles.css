@@ -8,7 +8,7 @@
     width: 100vw;
     height: 100vh;
     margin-top: 0px;
-    background: url('../images/back1.png') no-repeat center center fixed; 
+    background: url('../images/p1.jpg') no-repeat center center fixed; 
     background-size: cover; /* Изображение фона будет покрывать весь экран */
     color: #333;
 }
@@ -41,10 +41,10 @@ body {
 .container {
     display: block;
     margin: auto;
-    margin-top: 1rem; /* Добавляет отступ сверху */
-    width: 90%; /* Ширина контейнера 90% от ширины экрана */
-    max-width: 600px; /* Максимальная ширина остаётся 600px */
-    padding: 2rem; /* Паддинг в rem для адаптивности */
+    margin-top: 1rem; 
+    width: 50em;
+    max-width: 900px; /* Уменьшена ширина контейнера */
+    padding: 1.5rem; /* Уменьшен padding */
     border-radius: 10px;
     background-color: rgba(255, 255, 255, 0.9);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -93,7 +93,7 @@ button {
     transition: background-color 0.3s ease;
 }
 button:hover {
-    background-color: #4CAF50;
+    background-color: #624535;
 }
 .result {
     margin-top: 2rem;
@@ -264,4 +264,16 @@ ul.hotel-features {
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         margin: auto; /* Центрируем контейнер */
     }
+}
+
+.main_index {
+    display: flex;
+    flex-direction: column;
+    
+}
+.answer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
