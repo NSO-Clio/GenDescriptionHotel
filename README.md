@@ -1,5 +1,8 @@
 # GenDescriptionHotel
 
+[![Code Size](https://img.shields.io/github/languages/code-size/NSO-Clio/GenDescriptionHotel)](https://github.com/NSO-Clio/GenDescriptionHotel)
+<img alt="python" src="https://img.shields.io/badge/python-3.11-yellow.svg"/>
+
 # Заказчик
 
 <img style="width: 25%; height: auto;" src='https://github.com/user-attachments/assets/6469610a-5437-4ed8-8318-96fc403cd75d'>
