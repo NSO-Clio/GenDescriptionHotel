@@ -74,7 +74,7 @@ document.getElementById("submitFeedback1").addEventListener("click", () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            description: "description1",
+            description: document.getElementById("generatedDescription1").textContent,
             rating: rating,
             comment: comment
         })
@@ -101,7 +101,7 @@ document.getElementById("submitFeedback2").addEventListener("click", () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-            description: "description2",
+            description: document.getElementById("generatedDescription2").textContent,
             rating: rating,
             comment: comment
         })
