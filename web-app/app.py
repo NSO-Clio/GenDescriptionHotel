@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template, jsonify
 from model import DescriptionGener
+from data_knowledge import DataKnowLedge
 import logging
 from logging.handlers import RotatingFileHandler
 from typing import Any, Dict
@@ -8,6 +9,7 @@ from typing import Any, Dict
 # Инициализация Flask-приложения и модели генерации описаний
 app: Flask = Flask(__name__, static_folder='static', static_url_path='/static')
 llm: DescriptionGener = DescriptionGener()
+dk: DataKnowLedge = DataKnowLedge()
 # Настройка логирования
 handler = RotatingFileHandler('application.log', maxBytes=1_000_000, backupCount=5, encoding="utf-8")
 handler.setLevel(logging.INFO)
@@ -17,6 +19,13 @@ formatter = logging.Formatter(
 handler.setFormatter(formatter)
 app.logger.addHandler(handler)
 app.logger.setLevel(logging.INFO)
+
+
+
+def get_similar_des(text: str) -> Any:
+    similar_des: list = dk.get_similar_chunks(query=text)
+    similar_des: dict = {i: similar_des[i] for i in range(len(similar_des))}
+    return jsonify(similar_des)
 
 
 @app.route('/')
@@ -74,6 +83,79 @@ def get_data() -> Any:
     )
     # Возврат JSON-ответа с сгенерированным описанием
     return jsonify({"description": response_text})
+
+
+@app.route('/generate_description', methods=['POST'])
+def generate_description() -> Any:
+    data: Dict[str, Any] = request.get_json()  # Получение JSON-данных от клиента
+    
+    # Извлечение данных об отеле из запроса
+    hotel_name: str = data.get('hotelName', '')
+    category: str = data.get('category', '')
+    services: str = data.get('services', '')
+    features: str = data.get('features', '')
+
+    print("Received data:", data)  # Логирование полученных данных
+
+    similar_descriptions: str = dk.get_similar_chunks("Как анализировать данные?", k=3)
+
+    description1: str = llm.genDescription(
+        hotel_name=hotel_name,
+        target_category=category,
+        services_description=services,
+        hotel_features=features,
+        similar_des = similar_descriptions,
+        temperature=0.2
+    )
+    app.logger.info(
+        f"hotel_name:{hotel_name} "
+        f"category:{category} "
+        f"services:{services} "
+        f"features:{features} "
+        f"Generated description:{description1}"
+    )
+
+    description2: str = llm.genDescription(
+        hotel_name=hotel_name,
+        target_category=category,
+        services_description=services,
+        hotel_features=features,
+        similar_des = similar_descriptions,
+        temperature=1.0
+    )
+    app.logger.info(
+        f"hotel_name:{hotel_name} "
+        f"category:{category} "
+        f"services:{services} "
+        f"features:{features} "
+        f"Generated description:{description2}"
+    )
+    # return jsonify({'description1': 'description1_1', 'description2': 'description2_2'})
+    return jsonify({'description1': description1, 'description2': description2})
+
+
+@app.route('/save_choice', methods=['POST'])
+def save_choice():
+    data = request.get_json()
+    choice = data.get('choice')
+    # Сохраняем выбор пользователя в базу данных или журнал
+    print(f"Пользователь выбрал: {choice}")
+    return jsonify({"message": f"Выбор {choice} сохранен успешно"})
+
+
+@app.route('/submit_feedback', methods=['POST'])
+def submit_feedback():
+    data = request.get_json()
+    print(data)
+
+    category: str = data.get('category', '')
+    description: str = data.get('description', '')
+    rating: str = data.get('rating', '')
+    comment: str = data.get('comment', '')
+
+    response_text: str = f'Катигория: {category} \n Описание: {description} \n Оценка: {rating} \n Комментарий: {comment}'
+    dk.add_chunks([response_text])
+    return jsonify({'message': 'Отзыв сохранён!'})
 
 
 # Запуск приложения

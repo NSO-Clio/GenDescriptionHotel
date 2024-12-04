@@ -76,7 +76,8 @@ document.getElementById("submitFeedback1").addEventListener("click", () => {
         body: JSON.stringify({
             description: document.getElementById("generatedDescription1").textContent,
             rating: rating,
-            comment: comment
+            comment: comment,
+            category: document.getElementById("category").value.trim()
         })
     })
         .then(response => response.json())
@@ -103,7 +104,8 @@ document.getElementById("submitFeedback2").addEventListener("click", () => {
         body: JSON.stringify({
             description: document.getElementById("generatedDescription2").textContent,
             rating: rating,
-            comment: comment
+            comment: comment,
+            category: document.getElementById("category").value.trim()
         })
     })
         .then(response => response.json())
