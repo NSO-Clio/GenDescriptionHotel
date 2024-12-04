@@ -21,24 +21,24 @@ class DescriptionGener:
     def genDescription(
             self,
             hotel_name: str,
-            hotel_address: str,
-            average_price: str,
             target_category: str,
             services_description: str,
             hotel_features: str,
-            max_new_tokens: int = 512
+            similar_des: str = 'Пока нет',
+            max_new_tokens: int = 512,
+            temperature: float = 1.0
     ) -> str:
         """
         Генерация описания отеля на основе заданных параметров.
 
         Параметры:
             hotel_name (str): Название отеля.
-            hotel_address (str): Адрес отеля.
-            average_price (str): Средняя стоимость номера за сутки в рублях.
             target_category (str): Целевая категория гостей.
             services_description (str): Описание предоставляемых услуг.
             hotel_features (str): Уникальные особенности отеля.
+            similar_des (str): Повожие описания.
             max_new_tokens (int): Максимальное количество генерируемых токенов (по умолчанию 512).
+            temperature (float): Температура генерации для управления креативностью (по умолчанию 1.0).
 
         Возвращает:
             str: Сгенерированное описание отеля.
@@ -56,11 +56,10 @@ class DescriptionGener:
             "ответьте: 'Ошибка данных: форма заполнена некорректно. Пожалуйста, проверьте и исправьте вводимые данные.'\n\n"
             "Данные для создания описания:\n"
             f"1. Название отеля: {hotel_name}\n"
-            f"2. Адрес отеля: {hotel_address}\n"
-            f"3. Средняя стоимость номера за сутки (₽): {average_price}\n"
-            f"4. Целевая категория: {target_category}\n"
-            f"5. Описание услуг: {services_description}\n"
-            f"6. Особенности отеля: {hotel_features}\n\n"
+            f"2. Целевая категория: {target_category}\n"
+            f"3. Описание услуг: {services_description}\n"
+            f"4. Особенности отеля: {hotel_features}\n\n"
+            f"5. Похожие описания: {similar_des}\n\n"
             "На основе этих данных сформулируйте привлекательное описание отеля, подходящее для его целевой категории гостей. "
             "Учитывайте, что описание должно быть информативным и привлекать внимание к преимуществам отеля, так же описание должно быть на русском языке"
         )
@@ -85,7 +84,8 @@ class DescriptionGener:
         # Генерация текста с указанным ограничением по количеству токенов
         generated_ids: torch.Tensor = self.model.generate(
             **model_inputs,
-            max_new_tokens=max_new_tokens
+            max_new_tokens=max_new_tokens,
+            temperature=temperature
         )
 
         # Удаление начальных токенов, чтобы оставить только сгенерированную часть
