@@ -22,16 +22,15 @@ document.getElementById("chooseDescription2").addEventListener("click", () => {
 });
 
 function generateDescription() {
-    const hotelData = {
-        hotelName: document.getElementById("hotelName").value.trim(),
-        city: document.getElementById("CityAddress").value.trim(),
-        hotelAddress: document.getElementById("hotelAddress").value.trim(),
-        category: document.getElementById("category").value.trim(),
-        services: document.getElementById("services").value.trim(),
-        weather: document.getElementById("weather").value.trim(),
-        language: document.getElementById("language").value.trim(),
-        features: document.getElementById("features").value.trim(),
-        textLength: document.getElementById("textLength").value.trim(), // Новый параметр
+    const data = {
+        category: document.getElementById("category").value,
+        hotelName: document.getElementById("hotelName").value,
+        CityAddress: document.getElementById("CityAddress").value,
+        hotelAddress: document.getElementById("hotelAddress").value,
+        weather: document.getElementById("weather").value,
+        language: document.getElementById("language").value,
+        features: document.getElementById("features").value,
+        textLength: document.getElementById("textLength").value,
     };
 
     fetch('/generate_description', {
@@ -39,31 +38,27 @@ function generateDescription() {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(hotelData),
+        body: JSON.stringify(data),
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.error) {
-                console.error("Ошибка сервера:", data.error);
-                alert("Произошла ошибка: " + data.error);
-                return;
-            }
+    .then(response => response.json())
+    .then(result => {
+        console.log(result);
 
-            document.getElementById("generatedDescription1").textContent = data.description1;
-            document.getElementById("generatedDescription2").textContent = data.description2;
-            document.getElementById("example1").classList.remove("hidden");
-            document.getElementById("example2").classList.remove("hidden");
-        })
-        .catch(error => {
-            console.error("Ошибка:", error);
-            alert("Произошла ошибка при обработке данных.");
-        });
+        // Обновление первого описания
+        const exampleBlock1 = document.getElementById("example1");
+        exampleBlock1.classList.remove("hidden");
+        document.getElementById("generatedDescription1").textContent = result.description1;
+
+        // Обновление второго описания
+        const exampleBlock2 = document.getElementById("example2");
+        exampleBlock2.classList.remove("hidden");
+        document.getElementById("generatedDescription2").textContent = result.description2;
+    })
+    .catch(error => {
+        console.error("Ошибка:", error);
+    });
 }
+
 
 
 document.getElementById("submitFeedback1").addEventListener("click", () => {

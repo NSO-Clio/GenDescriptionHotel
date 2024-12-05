@@ -43,51 +43,6 @@ def generate() -> str:
     return render_template('index.html')
 
 
-@app.route('/get_data', methods=['POST'])
-def get_data() -> Any:
-    """
-    Обработка данных, полученных от клиента для генерации описания отеля.
-    Ожидается JSON с информацией об отеле.
-    
-    Возвращает:
-        JSON-ответ с описанием отеля или ошибкой, если данные некорректны.
-    """
-    data: Dict[str, Any] = request.get_json()  # Получение JSON-данных от клиента
-    
-    # Извлечение данных об отеле из запроса
-    hotel_name: str = data.get('hotelName', '')
-    hotel_address: str = data.get('hotelAddress', '')
-    price_per_night: str = data.get('pricePerNight', '')
-    category: str = data.get('category', '')
-    services: str = data.get('services', '')
-    features: str = data.get('features', '')
-
-    print("Received data:", data)  # Логирование полученных данных
-
-    # Генерация описания отеля с использованием модели
-    response_text: str = llm.genDescription(
-        hotel_name=hotel_name,
-        hotel_address=hotel_address,
-        average_price=price_per_night,
-        target_category=category,
-        services_description=services,
-        hotel_features=features
-    )
-
-    print("Generated description:", response_text)  # Логирование результата генерации
-    app.logger.info(
-        f"hotel_name:{hotel_name} "
-        f"hotel_address:{hotel_address} "
-        f"price_per_night:{price_per_night} "
-        f"category:{category} "
-        f"services:{services} "
-        f"features:{features} "
-        f"Generated description:{response_text}"
-    )
-    # Возврат JSON-ответа с сгенерированным описанием
-    return jsonify({"description": response_text})
-
-
 @app.route('/generate_description', methods=['POST'])
 def generate_description() -> Any:
     data: Dict[str, Any] = request.get_json()  # Получение JSON-данных от клиента
@@ -95,61 +50,65 @@ def generate_description() -> Any:
 
     # Извлечение данных об отеле из запроса
     hotel_name: str = data.get('hotelName', '')
-    addres: str = data.get('hotelAddres', '')
+    hotel_address: str = f"{data.get('CityAddress', '')}, {data.get('hotelAddress', '')}"
+    services_description_features = data.get('features', '')
     category: str = data.get('category', '')
-    services: str = data.get('services', '')
-    features: str = data.get('features', '')
+    season_year: str = data.get('weather', '')
+    language: str = data.get('language', '')
+    textLength: str = data.get('textLength', '')
 
-    attractions: dict = info_geo.get_attractions(addres)
+    attractions: dict = info_geo.get_attractions(hotel_address)
     info_geo_attractions: str = ''
     for name, details in attractions.items():
         info_geo_attractions += f"{name}: Рейтинг - {details['rating']}, Расстояние - {details['distance']} \n"
     app.logger.info(
-        f"get_geo_info: {addres} "
+        f"get_geo_info: {hotel_address} "
         f"info: {info_geo_attractions}"
     )
 
     similar_descriptions: str = dk.get_similar_chunks(
         f"hotel_name:{hotel_name} "
         f"category:{category} "
-        f"services:{services} "
-        f"features:{features + f' близко к Достопримечательностям: {info_geo_attractions}'} ",
+        f"services_description_features:{services_description_features}" + f' близко к Достопримечательностям: {info_geo_attractions}',
         k=3
     )
 
     description1: str = llm.genDescription(
         hotel_name=hotel_name,
+        hotel_address=hotel_address,
         target_category=category,
-        services_description=services,
-        hotel_features=features + f' близко к Достопримечательностям: {info_geo_attractions}',
-        similar_des = similar_descriptions,
+        services_description_features=services_description_features + f' близко к Достопримечательностям: {info_geo_attractions}',
+        season_year=season_year,
+        language=language,
+        textLength=textLength,
+        similar_des=similar_descriptions,
         temperature=0.2
     )
     app.logger.info(
         f"hotel_name:{hotel_name} "
         f"category:{category} "
-        f"services:{services} "
-        f"features:{features + f' близко к Достопримечательностям: {info_geo_attractions}'} "
+        f"services_description_features:{services_description_features}" + f' близко к Достопримечательностям: {info_geo_attractions}'
         f"Generated description:{description1}"
     )
 
     description2: str = llm.genDescription(
         hotel_name=hotel_name,
+        hotel_address=hotel_address,
         target_category=category,
-        services_description=services,
-        hotel_features=features + f' близко к Достопримечательностям: {info_geo_attractions}',
-        similar_des = similar_descriptions,
-        temperature=1.0
+        services_description_features=services_description_features + f' близко к Достопримечательностям: {info_geo_attractions}',
+        season_year=season_year,
+        language=language,
+        textLength=textLength,
+        similar_des=similar_descriptions,
+        temperature=0.2
     )
     app.logger.info(
         f"hotel_name:{hotel_name} "
         f"category:{category} "
-        f"services:{services} "
-        f"features:{features + f' близко к Достопримечательностям: {info_geo_attractions}'} "
+        f"services_description_features:{services_description_features}" + f' близко к Достопримечательностям: {info_geo_attractions}'
         f"Generated description:{description2}"
     )
     
-    # return jsonify({'description1': 'description1_1', 'description2': 'description2_2'})
     return jsonify({'description1': description1, 'description2': description2})
 
 
