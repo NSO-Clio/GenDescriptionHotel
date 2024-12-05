@@ -24,6 +24,7 @@ document.getElementById("chooseDescription2").addEventListener("click", () => {
 function generateDescription() {
     const hotelData = {
         hotelName: document.getElementById("hotelName").value.trim(),
+        hotelAddres: document.getElementById("hotelAddress").value.trim(),
         category: document.getElementById("category").value.trim(),
         services: document.getElementById("services").value.trim(),
         features: document.getElementById("features").value.trim(),
