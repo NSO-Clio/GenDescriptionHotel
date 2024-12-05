@@ -22,33 +22,46 @@
     <main class="main_index">
         <section class="main">
             <div class="container">
-                <h1>Генерация описания отеля</h1>
+                <h1 class="h1_container">Генерация описания отеля</h1>
                 <form id="hotelForm">
-                    <!-- Шаг 1: Выбор категории -->
-                    <div id="step1" class="form-step">
+                    <!-- Шаг 1: Просмотр видео -->
+                    <div id="step0" class="form-step active video-step">
+                        <h2 class="h2_hotelForm">Как работает наш сервис?</h2>
+                        <iframe 
+                            src="https://rutube.ru/play/embed/your-video-id" 
+                            frameborder="0" 
+                            allow="autoplay; encrypted-media" 
+                            allowfullscreen>
+                        </iframe>
+                        <button type="button" class="btn" onclick="goToStep(1)">Продолжить</button>
+                    </div>
+        
+                    <!-- Шаг 2: Выбор категории -->
+                    <div id="step1" class="form-step hidden">   
                         <h2>Шаг 1: Выберите категорию отеля</h2>
                         <select id="category" name="category" required>
                             <option value="" disabled selected>Выберите категорию</option>
-                            <option value="Горнолыжный отель">Горнолыжный отель</option>
-                            <option value="Хостел">Хостел</option>
-                            <option value="Гостиница">Гостиница</option>
-                            <option value="Бизнес-отели">Бизнес-отели</option>
-                            <option value="Курортные отели">Курортные отели</option>
-                            <option value="Бутик-отели">Бутик-отели</option>
-                            <option value="Апартаменты и апарт-отели">Апартаменты и апарт-отели</option>
-                            <option value="Мини-гостиницы">Мини-гостиницы</option>
-                            <option value="Спа отель">Спа отель</option>
-                            <option value="Санаторий">Санаторий</option>
-                            <option value="Пансионат">Пансионат</option>
-                            <option value="Мотель">Мотель</option>
-                            <option value="Эко отели">Эко отели</option>
-                            <option value="Лоджи отель">Лоджи отель</option>
+                            <option value="Горнолыжный отель">Горнолыжный отель — отдых на лыжных курортах.</option>
+                            <option value="Хостел">Хостел — экономичный вариант размещения.</option>
+                            <option value="Гостиница">Гостиница — классический выбор для путешествий.</option>
+                            <option value="Бизнес-отели">Бизнес-отели — для деловых поездок.</option>
+                            <option value="Курортные отели">Курортные отели — для расслабляющего отдыха.</option>
+                            <option value="Бутик-отели">Бутик-отели — уникальный стиль и атмосфера.</option>
+                            <option value="Апартаменты и апарт-отели">Апартаменты — для длительного проживания.</option>
+                            <option value="Мини-гостиницы">Мини-гостиницы — уют и спокойствие.</option>
+                            <option value="Спа отель">Спа отель — релаксация и оздоровление.</option>
+                            <option value="Санаторий">Санаторий — оздоровительные услуги.</option>
+                            <option value="Пансионат">Пансионат — семейный отдых.</option>
+                            <option value="Мотель">Мотель — для автопутешественников.</option>
+                            <option value="Эко отели">Эко отели — близость к природе.</option>
+                            <option value="Лоджи отель">Лоджи отель — отдых на природе.</option>
                         </select>
                         <div id="categoryDescription" class="form-group"></div>
+                        <button type="button" class="btn btn-secondary" onclick="goToStep(0)">Назад</button>
                         <button type="button" class="btn btn-primary" onclick="goToStep(2)">Далее</button>
                     </div>
-    
-                    <!-- Шаг 2: Заполнение информации об отеле -->
+        
+                    <!-- Шаг 3: Заполнение информации об отеле -->
                     <div id="step2" class="form-step hidden">
                         <h2>Шаг 2: Заполните информацию об отеле</h2>
                         <div class="form-group">
@@ -56,31 +69,73 @@
                             <input type="text" id="hotelName" name="hotelName" required>
                         </div>
                         <div class="form-group">
-                            <label for="hotelAddress">Адрес отеля: (город)</label>
+                            <label for="CityAddress">Город:</label>
+                            <input type="text" id="CityAddress" name="CityAddress" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="hotelAddress">Адрес отеля:</label>
                             <input type="text" id="hotelAddress" name="hotelAddress" required>
                         </div>
                         <button type="button" class="btn btn-secondary" onclick="goToStep(1)">Назад</button>
                         <button type="button" class="btn btn-primary" onclick="goToStep(3)">Далее</button>
                     </div>
-    
-                    <!-- Шаг 3: Дополнительные сведения -->
-                    <div id="step3" class="form-step hidden">
-                        <h2>Шаг 3: Укажите дополнительные сведения</h2>
 
+                            
+                    <!-- Шаг 3: Заполнение информации об отеле -->
+                    <div id="step3" class="form-step hidden">
+                        <h2>Шаг 3: Заполните этапы для генерации.</h2>
                         <div class="form-group">
-                            <label for="services">Описание услуг:</label>
-                            <textarea id="services" name="services" placeholder="Например, бесплатный Wi-Fi, бассейн, фитнес-зал, ресторан и т.д." required></textarea>
+                            <label for="weather">Выберите время года:</label>
+                            <select id="weather" name="weather" required>
+                                <option value="Осень">Осень</option>
+                                <option value="Лето">Лето</option>
+                                <option value="Зима">Зима</option>
+                                <option value="Весна">Весна</option>
+                            </select>
                         </div>
+
+                        <!-- Добавление выбора языка для генерации -->
                         <div class="form-group">
-                            <label for="features">Особенности отеля:</label>
-                            <textarea id="features" name="features" placeholder="Например, в центре города, рядом с парком, уникальный дизайн, рядом с морем и тд." required></textarea>
+                            <label for="language">Выберите язык:</label>
+                            <select id="language" name="language" required>
+                                <option value="Русский">Русский</option>
+                                <option value="Английский">Английский</option>
+                                <option value="Китайский">Китайский</option>
+                                <option value="Немецкий">Немецкий</option>
+                                <option value="Французский">Французский</option>    
+                            </select>
                         </div>
                         <button type="button" class="btn btn-secondary" onclick="goToStep(2)">Назад</button>
-                        <button type="button" class="btn btn-primary" onclick="generateDescription()">Показать пример</button>
+                        <button type="button" class="btn btn-primary" onclick="goToStep(4)">Далее</button>
+                    </div>
+        
+                    <!-- Шаг 4: Дополнительные сведения -->
+                    <div id="step4" class="form-step hidden">
+                        <h2>Шаг 3: Укажите дополнительные сведения</h2>
+                        <div class="form-group">
+                            <label for="features">Особенности отеля:</label>
+                            <textarea id="features" name="features" placeholder="Пожалуйста, опишите особенности и услуги вашего отеля. Например, в центре города, рядом с парком, уникальный дизайн, есть банный комплекс и т.д. Этот пункт не обязательный, можете его пропустить." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="textLength">Выберите объём:</label>
+                            <select id="textLength" name="textLength" required>
+                                <option value="Короткое">Короткое</option>
+                                <option value="Не большое">Не большое</option>
+                                <option value="Среднее">Среднее</option>
+                                <option value="Объёмное">Объёмное</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-secondary" onclick="goToStep(2)">Назад</button>
+                        <button type="button" class="btn btn-primary" onclick="generateDescription()">Сгенерировать</button>
                     </div>
                 </form>
             </div>
+
+            <div class="back_welcome" >
+                <a href="/">Назад</a>
+            </div>
         </section>
+
         <section class="answer">
             <div id="example1" class="description-block hidden">
                 <h3>Пример описания отеля в1:</h3>
