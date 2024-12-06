@@ -21,7 +21,14 @@ MTC Travel, сделано в рамках программы Сириус.ИИ
 
 # Скринкаст
 
-[!video](https://github.com/user-attachments/assets/d67e7e11-ba93-4841-8723-9da0c3361fae)
+[!video](https://github.com/user-attachments/assets/aa16202a-dce8-4642-a92a-8ccb533ba127)
+
+# Архитектура
+
+![Screenshot_170](https://github.com/user-attachments/assets/734b24b1-4dc7-4f16-bf76-42a31205cc28)
+
+![Screenshot_171](https://github.com/user-attachments/assets/d23f4bc3-c0de-45de-b0ff-27b2dd121ef3)
+
 
 # Решение
 
